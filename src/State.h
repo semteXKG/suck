@@ -1,31 +1,22 @@
-#ifndef STATE
-#define STATE
+#ifndef STATE_H
+#define STATE_H
 
-enum OP_MODE {
-    OFF,
-    ON_LOW,
-    ON_MID,
-    ON_HIGH
-};
+#include <OpMode.h>
+
+static const int OFF_STATE_TRESHOLD = 200;
 
 class State {
 private:
     bool stateChangeExpected = false;;
-    bool inUserMode = false;;
-    OP_MODE opMode = OFF;
+    bool inUserMode = false;
+    OpMode opMode = OFF;
+    long offStateSince = -1;
 public:
     State();
     ~State();
+    OpMode getOpMode();
+    void setOpMode(OpMode opMode);
+    bool isInUserMode();
 };
-
-State::State() {
-    
-
-
-}
-
-State::~State()
-{
-}
 
 #endif
