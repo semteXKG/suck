@@ -25,7 +25,7 @@ public:
     ~MachineController();
 
     bool isStateChangeAllowed();
-    bool setTargetState(OpMode targetMode);
+    bool setTargetState(OpMode targetMode, boolean overrideCommand);
     
     void onTick();
 

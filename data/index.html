@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ESP WEB SERVER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>   
+    <script>
+        function sendRequest(uri) {
+            $.ajax( {
+                url : uri,
+            });
+        };
+
+        jQuery(document).ready(function() {  
+            function updateData() {
+                $.ajax( {
+                    url: "status/manual",
+                    success: function (data) {
+                        $("#manual").html(data);
+                    }
+                });
+                $.ajax( {
+                    url: "status/deviceState",
+                    success: function (data) {
+                        $("#deviceState").html(data);
+                    }
+                });
+                $.ajax( {
+                    url: "status/lightSensors",
+                    success: function (data) {
+                        $("#lightSensors").html(data);
+                    }
+                });
+            }  
+            updateData();
+            setInterval(updateData, 5000); // 5 * 1000 miliseconds
+        });
+    </script>
+</head>
+  <body>
+    <div class="topnav">
+      <h1>AC400 SUCKer</h1>
+    </div>
+    <div class="content">
+      <div class="card-grid">
+        <div class="card">
+          <p class="card-title"><i class="fas fa-lightbulb"></i> AC400 status:</p>
+          <p class="state">Mode: <span id="manual">LOADING</span></p>
+          <p class="state">State: <span id="deviceState">LOADING</span></p>
+          <p class="state">Light Sensors: <span id="lightSensors">LOADING</span></p>
+        </div>
+        <div class="card">
+            <p class="card-title"><i class="fas fa-cogs"></i> Manual Override</p>
+            <p>
+              <button class="button-on" onclick="sendRequest('operation/on_low')">Low</button>
+              <button class="button-on" onclick="sendRequest('operation/on_mid')">Middle</button>
+              <button class="button-on" onclick="sendRequest('operation/on_high')">High</button>
+              <button class="button-on" onclick="sendRequest('operation/off')">Off</button>
+            </p>
+          </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -17,7 +17,10 @@ bool LedTracker::isTurnedOn(gpio_num_t pin) {
 }
 
 void LedTracker::onTick() {
-    logOutput();
+    if(lastUpdate + 2000 < millis()) {
+        logOutput();
+        lastUpdate = millis();
+    }
     if(isTurnedOn(pinLow)) {
         state->setOpMode(ON_LOW);
     } else if (isTurnedOn(pinMid)) {
@@ -30,19 +33,15 @@ void LedTracker::onTick() {
 }
 
 void LedTracker::logOutput() {
-    Serial.print("Pin: ");
-    Serial.print(pinLow);
-    Serial.print(" - ");
-    Serial.println(analogRead(pinLow));
+    logField(pinLow, state->lightSensor.sensorLow);
+    logField(pinMid, state->lightSensor.sensorMid);
+    logField(pinHigh, state->lightSensor.sensorHigh);
+    Serial.printf("\n");
+}
 
-    Serial.print("Pin: ");
-    Serial.print(pinMid);
-    Serial.print(" - ");
-    Serial.println(analogRead(pinMid));
-
-    Serial.print("Pin: ");
-    Serial.print(pinHigh);
-    Serial.print(" - ");
-    Serial.println(analogRead(pinHigh));
-
+void LedTracker::logField(gpio_num_t pin, int& store) {
+    int val = analogRead(pinLow);
+    double percent = ((4096 - val) / 4096.0) * 100.0;
+    store = val;
+    Serial.printf("Pin: %d - %3.2f percent (%d)\n", pin, percent, val);
 }

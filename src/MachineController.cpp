@@ -14,10 +14,16 @@ MachineController::MachineController(gpio_num_t pinOn, gpio_num_t pinOff, State*
 MachineController::~MachineController() {
 }
 
-bool MachineController::setTargetState(OpMode targetMode) {
-    if(!isStateChangeAllowed()) {
+bool MachineController::setTargetState(OpMode targetMode, boolean overrideCommand) {
+    if (overrideCommand) {
+        state->changeToUserMode();
+    }
+    Serial.println("BEEP BEEP");
+    if(!isStateChangeAllowed() && !overrideCommand) {
         return false;
     }
+    Serial.println("BOOP BOOP");
+    Serial.printf("Requesting new state %s, manual override = %d", OpModeStr[targetMode], overrideCommand);
     this->targetMode = targetMode;
     return true;
 }
@@ -30,6 +36,7 @@ void MachineController::triggerOffRelais() {
     if(lastOffImpulse + IMPULSE_DELAY > millis()) {
         return;
     }
+    Serial.println("Triggering OFF relais");
     digitalWrite(pinOff, HIGH);
     delay(IMPULSE_DURATION);
     digitalWrite(pinOff, LOW);
@@ -40,6 +47,7 @@ void MachineController::triggerOnRelais() {
     if(lastOnImpulse + IMPULSE_DELAY > millis()) {
         return;
     }
+    Serial.println("Triggering ON relais");
     digitalWrite(pinOn, HIGH);
     delay(IMPULSE_DURATION);
     digitalWrite(pinOn, LOW);
@@ -47,7 +55,11 @@ void MachineController::triggerOnRelais() {
 }
 
 void MachineController::onTick() {
+    if (targetMode == UNTRACKED) {
+        return;
+    }
     if(state->getOpMode() == targetMode) {
+        targetMode = UNTRACKED;
         return;
     }
 

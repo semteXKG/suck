@@ -43,3 +43,7 @@ void State::setOpMode(OpMode opMode) {
 bool State::isInUserMode() {
     return inUserMode;
 }
+
+void State::changeToUserMode() {
+    inUserMode = true;
+}
