@@ -30,9 +30,9 @@ struct LightSensorReadings
 };
 
 struct AirQualityReadings {
-    double pm0_5;
-    double pm2_5;
-    double pm10;
+    double pm0_5 = 20.2;
+    double pm2_5 = 4.2;
+    double pm10 = 1.3;
 };
 
 

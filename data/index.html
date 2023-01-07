@@ -17,22 +17,15 @@
         jQuery(document).ready(function() {  
             function updateData() {
                 $.ajax( {
-                    url: "status/manual",
+                    url: "status",
                     success: function (data) {
-                        $("#manual").html(data);
-                    }
-                });
-                $.ajax( {
-                    url: "status/deviceState",
-                    success: function (data) {
-                        $("#deviceState").html(data);
-                    }
-                });
-                $.ajax( {
-                    url: "status/lightSensors",
-                    success: function (data) {
-                        $("#lightSensors").html(data);
-                    }
+                        $("#manual").html(data["manual"]);
+                        $("#deviceState").html(data["deviceState"]);
+                        $("#lightSensors").html(Number(data["lightSensors"][0]).toFixed(2) + "&#37;<br>" + Number(data["lightSensors"][1]).toFixed(2) + "&#37;<br>" + Number(data["lightSensors"][2]).toFixed(2) + "&#37;");
+                        $("#pmSensors05").html(Number(data["pmSensors"][0]).toFixed(2));
+                        $("#pmSensors25").html(Number(data["pmSensors"][1]).toFixed(2));
+                        $("#pmSensors100").html(Number(data["pmSensors"][2]).toFixed(2));
+                      }
                 });
             }  
             updateData();
@@ -48,10 +41,27 @@
       <div class="card-grid">
         <div class="card">
           <p class="card-title"><i class="fas fa-lightbulb"></i> AC400 status:</p>
-          <p class="state">Mode: <span id="manual">LOADING</span></p>
-          <p class="state">State: <span id="deviceState">LOADING</span></p>
-          <p class="state">Light Sensors: <span id="lightSensors">LOADING</span></p>
+          <p class="state">Mode: <b><span id="manual">LOADING</span></b></p>
+          <p class="state">State: <b><span id="deviceState">LOADING</span></b></p>
+          <p class="state">PM Sensors:
+            <p class="substate">
+              <span>PM0.5:</span> <span id="pmSensors05">LOADING</span>
+            </p>
+            <p class="substate">
+              <span>PM2.5:</span> <b><span id="pmSensors25">LOADING</span></b>
+            </p>
+            <p class="substate">
+              <span>PM10: </span> <span id="pmSensors100">LOADING</span>
+            </p>
+          </p>
+          <p class="state">Light Sensors:
+            <p class="substate">
+              <span id="lightSensors">LOADING</span>
+            </p>
+          </p>
+        
         </div>
+
         <div class="card">
             <p class="card-title"><i class="fas fa-cogs"></i> Manual Override</p>
             <p>
