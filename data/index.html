@@ -22,7 +22,6 @@
                         $("#manual").html(data["manual"]);
                         $("#deviceState").html(data["deviceState"]);
                         $("#lightSensors").html(Number(data["lightSensors"][0]).toFixed(2) + "&#37;<br>" + Number(data["lightSensors"][1]).toFixed(2) + "&#37;<br>" + Number(data["lightSensors"][2]).toFixed(2) + "&#37;");
-                        $("#pmSensors05").html(Number(data["pmSensors"][0]).toFixed(2));
                         $("#pmSensors25").html(Number(data["pmSensors"][1]).toFixed(2));
                         $("#pmSensors100").html(Number(data["pmSensors"][2]).toFixed(2));
                       }
@@ -44,9 +43,6 @@
           <p class="state">Mode: <b><span id="manual">LOADING</span></b></p>
           <p class="state">State: <b><span id="deviceState">LOADING</span></b></p>
           <p class="state">PM Sensors:
-            <p class="substate">
-              <span>PM0.5:</span> <span id="pmSensors05">LOADING</span>
-            </p>
             <p class="substate">
               <span>PM2.5:</span> <b><span id="pmSensors25">LOADING</span></b>
             </p>
