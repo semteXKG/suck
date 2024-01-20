@@ -2,6 +2,8 @@
 #include <State.h>
 
 State::State() {
+    status = MachineStatus::OFF;
+    opMode = OpMode::LOCAL;
 }
 
 State::~State() {
@@ -13,37 +15,30 @@ OpMode State::getOpMode() {
 
 
 void State::setOpMode(OpMode opMode) {
-    if(this->opMode == opMode) {
+    if(opMode == this->opMode) {
         return;
     }
 
-    if(opMode == OFF) {
-        if(offStateSince == -1) {
-            offStateSince = millis();
-        }
-
-        if(offStateSince > millis() - OFF_STATE_TRESHOLD) {
-            return; 
-        }
-        offStateSince = -1;
-        inUserMode = false;
-    } else {
-        if(!stateChangeExpected) {
-            inUserMode = true;
-        }
-    }
-
-    Serial.print("Switching to: ");
+    Serial.print("Switching OpMode: ");
+    Serial.print(OpModeStr[this->opMode]);
+    Serial.print(" -> ");
     Serial.println(OpModeStr[opMode]);
 
     this->opMode = opMode;
-    stateChangeExpected = false;
 }
 
-bool State::isInUserMode() {
-    return inUserMode;
+void State::setStatus(MachineStatus status) {
+    if(status == this->status) {
+        return;
+    }
+    
+    Serial.print("Switching Status: ");
+    Serial.print(MachineStatusStr[this->status]);
+    Serial.print(" -> ");
+    Serial.println(MachineStatusStr[status]);
+    this->status = status;
 }
 
-void State::changeToUserMode() {
-    inUserMode = true;
+MachineStatus State::getStatus() {
+    return this->status;
 }

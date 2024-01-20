@@ -27,14 +27,9 @@ void Webserver::start() {
         response->addHeader("Server","ESP Async Web Server");
         JsonVariant& root = response->getRoot();
         JsonObject doc = root.to<JsonObject>();
-        doc["manual"] = state->isInUserMode() ? "Manual" : "Auto";
-        doc["deviceState"] = OpModeStr[state->getOpMode()];
-
-        JsonArray lightSensorArray = doc.createNestedArray("lightSensors");
-        lightSensorArray.add(state->lightSensor.sensorLowAsPercent());
-        lightSensorArray.add(state->lightSensor.sensorMidAsPercent());
-        lightSensorArray.add(state->lightSensor.sensorHighAsPercent());
-          
+        doc["mode"] = OpModeStr[state->getOpMode()];
+        doc["machineStatus"] = MachineStatusStr[state->getStatus()];
+         
         JsonArray pmSensorArray = doc.createNestedArray("pmSensors");
         pmSensorArray.add(state->airQuality.pm0_5);
         pmSensorArray.add(state->airQuality.pm2_5);
@@ -44,30 +39,32 @@ void Webserver::start() {
         request->send(response);
     });
 
-    webserver->on("/status/lightSensors", HTTP_GET, [&](AsyncWebServerRequest *request) {
-
-    });
-
-
     webserver->on("/operation/on_low", HTTP_GET, [&](AsyncWebServerRequest *request) {
         Serial.println("Triggering LOW");
-        this->machineController->setTargetState(ON_LOW, true);
-        request->send(SPIFFS, "/index.html", "text/html", false, processor);
-    });
-
-    webserver->on("/operation/on_mid", HTTP_GET, [&](AsyncWebServerRequest *request) {
-      this->machineController->setTargetState(ON_MID, true);
-      request->send(SPIFFS, "/index.html", "text/html", false, processor);
+        if(this->state->getOpMode() != OpMode::API) {
+          request->send(SPIFFS, "/index.html", "text/html", false, processor);
+        }
+        
+        this->state->setStatus(MachineStatus::ON_LOW);
+        request->send(SPIFFS, "/index.html", "text/html", true, processor);
     });
 
     webserver->on("/operation/on_high", HTTP_GET, [&](AsyncWebServerRequest *request) {
-      this->machineController->setTargetState(ON_HIGH, true);
-      request->send(SPIFFS, "/index.html", "text/html", false, processor);
+      Serial.println("Triggering LOW");
+      if(this->state->getOpMode() != OpMode::API) {
+        request->send(SPIFFS, "/index.html", "text/html", false, processor);
+      }
+        this->state->setStatus(MachineStatus::ON_HIGH);
+        request->send(SPIFFS, "/index.html", "text/html", true, processor);
     });
 
     webserver->on("/operation/off", HTTP_GET, [&](AsyncWebServerRequest *request) {
-      this->machineController->setTargetState(OFF, true);
-      request->send(SPIFFS, "/index.html", "text/html", false, processor);
+      Serial.println("Triggering OFF");
+      if(this->state->getOpMode() != OpMode::API) {
+        request->send(SPIFFS, "/index.html", "text/html", false, processor);
+      }
+        this->state->setStatus(MachineStatus::OFF);
+        request->send(SPIFFS, "/index.html", "text/html", true, processor);
     });
 
     webserver->begin();

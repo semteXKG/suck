@@ -1,33 +1,9 @@
 #ifndef STATE_H
 #define STATE_H
 
-#include <OpMode.h>
+#include <Constants.h>
 
 static const int OFF_STATE_TRESHOLD = 200;
-
-struct LightSensorReadings
-{
-    int sensorLow;
-    int sensorMid;
-    int sensorHigh;
-
-    double sensorLowAsPercent() {
-        return sensorAsPercent(sensorLow);
-    }
-
-    double sensorMidAsPercent() {
-        return sensorAsPercent(sensorMid);
-    }
-
-    double sensorHighAsPercent() {
-        return sensorAsPercent(sensorHigh);
-    }
-
-
-    double sensorAsPercent(int measurement) {
-        return ((4096 - measurement) / 4096.0) * 100.0;
-    }
-};
 
 struct AirQualityReadings {
     double pm0_5 = 20.2;
@@ -38,17 +14,17 @@ struct AirQualityReadings {
 
 class State {
 private:
-    bool stateChangeExpected = false;;
-    bool inUserMode = false;
-    OpMode opMode = OFF;
-    long offStateSince = -1;
+    OpMode opMode = OpMode::LOCAL;
+    MachineStatus status = MachineStatus::OFF;
+    
 public:
-    LightSensorReadings lightSensor;
     AirQualityReadings airQuality;
     State();
     ~State();
     OpMode getOpMode();
     void setOpMode(OpMode opMode);
+    MachineStatus getStatus();
+    void setStatus(MachineStatus status);
     bool isInUserMode();
     void changeToUserMode();
 };

@@ -27,7 +27,7 @@ DustTracker::~DustTracker() {
 }
 
 void DustTracker::onTick() {
-    if(millis() - lastUpdate > 2000) {
+    if(millis() - lastUpdate > 1000000) {
         PmResult result = dustSensor->queryPm();
         Serial.printf("PM2.5: %f, PM10: %f\n\n", result.pm25, result.pm10);
         state->airQuality.pm10 = result.pm10;
@@ -35,7 +35,5 @@ void DustTracker::onTick() {
         lastUpdate = millis();
     }
 }
-
-
 
 #endif
