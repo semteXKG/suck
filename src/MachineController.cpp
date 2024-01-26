@@ -3,6 +3,8 @@
 MachineController::MachineController(gpio_num_t lowRelayPower, gpio_num_t highRelayPower, State* state) {
     this->lowRelayPower = lowRelayPower;
     this->highRelayPower = highRelayPower;
+    pinMode(lowRelayPower, OUTPUT);
+    pinMode(highRelayPower, OUTPUT);
     this->state = state;
 }
 
